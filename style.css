@@ -326,3 +326,27 @@ html[data-theme=dark] .direct-contact-link{border-color:rgba(255,255,255,.1)}
 @media(prefers-reduced-motion:reduce){
   .gallery-grid[data-swipe-deck="true"]>.art-card,.art-flip-inner{transition-duration:.01ms!important}
 }
+
+/* Swipe deck: background cards show only the artwork, never duplicate captions/actions. */
+.gallery-grid[data-swipe-deck="true"]>.art-card:not(.is-swipe-active)>.art-info,
+.gallery-grid[data-swipe-deck="true"]>.art-card:not(.is-swipe-active)>.card-actions,
+.gallery-grid[data-swipe-deck="true"]>.art-card:not(.is-swipe-active)>.product-options{
+  visibility:hidden!important;
+  opacity:0!important;
+  pointer-events:none!important;
+}
+.gallery-grid[data-swipe-deck="true"]>.art-card:not(.is-swipe-active) .art-flip-trigger,
+.gallery-grid[data-swipe-deck="true"]>.art-card:not(.is-swipe-active) .art-label{
+  visibility:hidden!important;
+}
+.gallery-grid[data-swipe-deck="true"]>.art-card.is-swipe-next,
+.gallery-grid[data-swipe-deck="true"]>.art-card.is-swipe-next-two{
+  overflow:hidden;
+  border-radius:4px;
+}
+.gallery-grid[data-swipe-deck="true"]>.art-card.is-swipe-active{
+  z-index:4;
+}
+@media(max-width:680px){
+  .gallery-grid[data-swipe-deck="true"]{height:760px}
+}
