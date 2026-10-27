@@ -207,7 +207,7 @@ html[data-theme=dark] .site-loader{background:#11120f}
 .offer-card:nth-child(1){transform:rotate(-1.35deg) translateY(5px)}.offer-card:nth-child(2){transform:translateY(-3px)}.offer-card:nth-child(3){transform:rotate(1.35deg) translateY(5px)}
 .offer-card:hover,.offer-card:focus-visible{z-index:2;transform:translateY(-9px) rotate(0);box-shadow:0 24px 42px rgba(38,36,30,.15),inset 0 1px white;outline:none}
 .offer-kicker{font:8px var(--mono);letter-spacing:.12em;color:var(--moss)}
-.offer-icon{width:49px;height:49px;margin:22px 0 15px;padding:10px;border-radius:15px;color:var(--moss-deep);background:rgba(255,255,255,.58);border:1px solid rgba(92,104,76,.12);fill:none;stroke:currentColor;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round}
+.offer-icon{display:block;width:76px;height:76px;margin:22px 0 15px;padding:6px;border-radius:18px;color:var(--moss-deep);background:rgba(255,255,255,.58);border:1px solid rgba(92,104,76,.12);fill:none;stroke:currentColor;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round}.offer-icon defs,.offer-icon rect,.offer-icon circle,.offer-icon path{vector-effect:non-scaling-stroke}.offer-icon-prints,.offer-icon-original,.offer-icon-custom{overflow:visible}
 .offer-card h3{font:27px/1.05 var(--serif);margin:0 0 9px}.offer-card p{max-width:290px;margin:0 0 22px;color:var(--muted);font-size:11px;line-height:1.7}
 .offer-link{display:flex;align-items:center;gap:8px;margin-top:auto;font:8px var(--mono);letter-spacing:.04em;color:var(--ink)}
 .offer-link .icon-inline{width:13px;height:13px;min-width:13px}
@@ -267,7 +267,7 @@ html[data-theme=dark] .direct-contact-link{border-color:rgba(255,255,255,.1)}
   .offers-grid{grid-template-columns:1fr;gap:15px}
   .offer-card,.offer-card:nth-child(1),.offer-card:nth-child(2),.offer-card:nth-child(3){min-height:0;padding:22px;transform:none}
   .offer-card:last-child{grid-column:auto}
-  .offer-icon{width:43px;height:43px;margin:14px 0 11px}
+  .offer-icon{width:68px;height:68px;margin:15px 0 12px;padding:5px}
   .offer-card h3{font-size:25px}
   .art-face-back{padding:17px}
   .art-story-copy h3{margin:12px 0 8px;font-size:23px}
