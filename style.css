@@ -350,3 +350,38 @@ html[data-theme=dark] .direct-contact-link{border-color:rgba(255,255,255,.1)}
 @media(max-width:680px){
   .gallery-grid[data-swipe-deck="true"]{height:760px}
 }
+
+
+/* Immersive artwork lightbox */
+body.artwork-viewer-open{overflow:hidden!important}
+.artwork-viewer{position:fixed;inset:0;z-index:10000;color:#f1eee8;background:rgba(14,15,13,.96);display:flex;flex-direction:column;overflow:hidden;isolation:isolate}
+.artwork-viewer-backdrop{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 42%,rgba(92,104,76,.2),transparent 62%);pointer-events:none}
+.artwork-viewer-toolbar{position:relative;z-index:3;display:flex;align-items:center;justify-content:space-between;gap:12px;margin:calc(14px + env(safe-area-inset-top)) 18px 0;padding:12px 14px;border:1px solid rgba(235,230,213,.23);border-radius:20px;background:rgba(43,44,38,.68);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);box-shadow:0 12px 40px rgba(0,0,0,.22)}
+.artwork-viewer-brand{display:flex;align-items:center;gap:10px;min-width:0}
+.artwork-viewer-monogram{width:38px;height:38px;border-radius:12px;border:1px solid rgba(235,230,213,.28);display:grid;place-items:center;color:#d9dfc8;font:12px var(--mono);flex:none}
+.artwork-viewer-brand b{display:block;font:600 11px var(--sans);letter-spacing:.12em;white-space:nowrap}
+.artwork-viewer-brand small{display:block;margin-top:4px;font:8px var(--mono);letter-spacing:.13em;color:#b7b7a7}
+.artwork-viewer-tools{display:flex;align-items:center;gap:7px}
+.artwork-viewer-tools button{height:38px;min-width:38px;padding:0 11px;border:1px solid rgba(235,230,213,.24);border-radius:99px;background:rgba(255,255,255,.09);color:#f1eee8;font:12px var(--sans);cursor:pointer}
+.artwork-viewer-tools button span{margin-left:3px}
+.artwork-viewer-stage{position:relative;z-index:1;flex:1;min-height:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:18px 20px calc(22px + env(safe-area-inset-bottom));gap:12px}
+.artwork-viewer-image-wrap{position:relative;width:min(100%,1100px);height:min(68vh,760px);height:min(68dvh,760px);display:grid;place-items:center;overflow:hidden;border:1px solid rgba(235,230,213,.22);border-radius:18px;background:linear-gradient(135deg,rgba(255,255,255,.08),rgba(255,255,255,.015));box-shadow:0 22px 80px rgba(0,0,0,.4),inset 0 1px rgba(255,255,255,.08)}
+.artwork-viewer-image{display:block;max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;transition:transform .2s ease;transform-origin:center center;user-select:none;-webkit-user-drag:none;touch-action:pan-y;cursor:zoom-in}
+.artwork-viewer-watermark{position:absolute;right:18px;bottom:16px;z-index:2;color:rgba(255,252,239,.72);font:500 12px var(--sans);letter-spacing:.16em;text-align:right;line-height:1.1;text-shadow:0 1px 12px rgba(0,0,0,.7);pointer-events:none;mix-blend-mode:screen}
+.artwork-viewer-watermark i{font-family:var(--serif);font-size:19px;font-weight:400;letter-spacing:.03em}
+.artwork-viewer-caption{width:min(100%,1100px);display:grid;grid-template-columns:1fr auto;column-gap:12px;align-items:end}
+.artwork-viewer-kicker{grid-column:1/-1;font:9px var(--mono);letter-spacing:.16em;color:#aab293;text-transform:uppercase}
+.artwork-viewer-caption h2{margin:4px 0 0;font:clamp(22px,4vw,34px) var(--serif);font-weight:400}
+.artwork-viewer-caption p{margin:0;color:#bcb9ad;font:11px var(--mono);text-align:right}
+.artwork-viewer-hint{font:8px var(--mono);letter-spacing:.13em;color:rgba(241,238,232,.48);text-align:center}
+@media(max-width:680px){
+ .artwork-viewer-toolbar{margin:calc(10px + env(safe-area-inset-top)) 10px 0;padding:9px 10px;border-radius:17px}
+ .artwork-viewer-monogram{width:32px;height:32px;border-radius:10px}
+ .artwork-viewer-brand{gap:7px}.artwork-viewer-brand b{font-size:9px;letter-spacing:.08em}.artwork-viewer-brand small{font-size:7px}
+ .artwork-viewer-tools{gap:5px}.artwork-viewer-tools button{height:35px;min-width:34px;padding:0 8px;font-size:11px}.artwork-viewer-tools button span{display:none}
+ .artwork-viewer-stage{padding:12px 10px calc(14px + env(safe-area-inset-bottom));gap:10px}
+ .artwork-viewer-image-wrap{height:min(65dvh,680px);width:100%;border-radius:13px}
+ .artwork-viewer-watermark{right:10px;bottom:10px;font-size:9px}.artwork-viewer-watermark i{font-size:16px}
+ .artwork-viewer-caption h2{font-size:25px}.artwork-viewer-caption p{font-size:9px;max-width:130px}
+ .artwork-viewer-hint{font-size:7px}
+}
