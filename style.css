@@ -125,3 +125,14 @@ html[data-theme="dark"]{--paper:#12120F;--card:#1C1B17;--ink:#ECE7DC;--muted:#A5
 }
 
 @media(prefers-reduced-motion:reduce){.ticker-track{animation:none!important}}
+
+
+/* Keep phone artwork interactions on their intended horizontal track. */
+.contact-icon-svg,.decorative-icon svg{display:block;width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+.decorative-icon{display:grid;place-items:center;width:28px;height:28px;flex:0 0 auto}
+.decorative-icon svg{width:23px;height:23px}
+.art-image img{-webkit-user-drag:none;user-select:none}
+@media(max-width:680px){
+  .featured-grid{overflow-x:auto;overflow-y:hidden;overscroll-behavior:contain;touch-action:pan-x}
+  .featured-grid .art-card{min-height:0}
+}
