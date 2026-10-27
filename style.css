@@ -348,7 +348,7 @@ html[data-theme=dark] .direct-contact-link{border-color:rgba(255,255,255,.1)}
   z-index:4;
 }
 @media(max-width:680px){
-  .gallery-grid[data-swipe-deck="true"]{height:760px}
+  .gallery-grid[data-swipe-deck="true"]{height:660px}
 }
 
 
