@@ -281,3 +281,48 @@ html[data-theme=dark] .direct-contact-link{border-color:rgba(255,255,255,.1)}
   .language-panel h2{font-size:40px}
 }
 @media(prefers-reduced-motion:reduce){.pencil-loader *,.art-flip-inner,.offer-card,.language-panel{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+
+
+/* Fix flipped-card compositing on mobile Safari and keep story controls clear of copy. */
+.art-face{isolation:isolate;-webkit-backface-visibility:hidden;backface-visibility:hidden}
+.art-flip-trigger{background:rgba(38,36,30,.9);backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+.art-flip-trigger:hover,.art-flip-trigger:focus-visible{transform:none;background:var(--moss-deep)}
+.art-face-back{justify-content:flex-start;gap:12px;padding:22px 22px 18px}
+.art-story-copy{min-height:0;flex:1 1 auto;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;padding-bottom:8px}
+.art-story-copy p{margin-bottom:12px}
+.art-flip-return{position:relative;right:auto;bottom:auto;align-self:flex-start;flex:0 0 auto;margin-top:2px}
+.swipe-deck-heading{width:min(100%,540px);margin:30px auto 20px;display:flex;align-items:end;justify-content:space-between;gap:16px}
+.swipe-deck-heading .eyebrow{margin:0 0 7px}
+.swipe-deck-description{margin:0;color:var(--muted);font-size:12px;line-height:1.5}
+.swipe-deck-status{flex:none;color:var(--moss);font:11px var(--mono);letter-spacing:.08em;padding:8px 10px;border:1px solid var(--line);border-radius:99px}
+.gallery-grid[data-swipe-deck="true"]{display:block;position:relative;width:min(100%,540px);max-width:calc(100% - 8px);height:690px;margin:0 auto 18px;isolation:isolate;overflow:visible;touch-action:pan-y}
+.gallery-grid[data-swipe-deck="true"]>.art-card{position:absolute;inset:0 auto auto 0;width:100%;min-width:0;transition:transform .34s cubic-bezier(.2,.72,.2,1),opacity .34s ease;transform-origin:center top}
+.gallery-grid[data-swipe-deck="true"]>.art-card.is-swipe-active{z-index:4;opacity:1;pointer-events:auto;transform:translateX(var(--swipe-x,0px)) rotate(var(--swipe-rotation,0deg))}
+.gallery-grid[data-swipe-deck="true"]>.art-card.is-swipe-next{z-index:3;opacity:.92;pointer-events:none;transform:translateY(13px) scale(.965)}
+.gallery-grid[data-swipe-deck="true"]>.art-card.is-swipe-next-two{z-index:2;opacity:.72;pointer-events:none;transform:translateY(25px) scale(.93)}
+.gallery-grid[data-swipe-deck="true"]>.art-card.is-swipe-hidden{z-index:0;visibility:hidden;opacity:0;pointer-events:none;transform:translateY(32px) scale(.9)}
+.gallery-grid[data-swipe-deck="true"]>.art-card.is-swipe-dragging{transition:none;cursor:grabbing}
+.gallery-grid[data-swipe-deck="true"]>.art-card.is-swipe-away-left{z-index:5;opacity:0;pointer-events:none;transform:translateX(-130%) rotate(-12deg)}
+.gallery-grid[data-swipe-deck="true"]>.art-card.is-swipe-away-right{z-index:5;opacity:0;pointer-events:none;transform:translateX(130%) rotate(12deg)}
+.swipe-deck-controls{width:min(100%,540px);margin:0 auto 26px;display:flex;align-items:center;justify-content:center;gap:12px}
+.swipe-deck-controls button{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-width:118px;min-height:42px;padding:10px 16px;border:1px solid var(--line);border-radius:99px;background:rgba(255,255,255,.32);color:var(--ink);font-size:11px;cursor:pointer;transition:background .2s,border-color .2s,transform .2s}
+.swipe-deck-controls button:hover:not(:disabled){background:rgba(255,255,255,.7);border-color:var(--moss);transform:translateY(-1px)}
+.swipe-deck-controls button:disabled{opacity:.38;cursor:not-allowed}
+.swipe-deck-controls svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.gallery-grid[data-swipe-deck="true"] .art-image{cursor:grab}
+@media(max-width:680px){
+  .swipe-deck-heading{width:100%;margin:22px auto 16px}
+  .swipe-deck-description{font-size:11px;max-width:260px}
+  .swipe-deck-status{font-size:10px;padding:7px 8px}
+  .gallery-grid[data-swipe-deck="true"]{width:100%;max-width:100%;height:560px;margin-bottom:14px}
+  .gallery-grid[data-swipe-deck="true"]>.art-card.is-swipe-next{transform:translateY(10px) scale(.97)}
+  .gallery-grid[data-swipe-deck="true"]>.art-card.is-swipe-next-two{transform:translateY(20px) scale(.94)}
+  .swipe-deck-controls{margin-bottom:18px}
+  .swipe-deck-controls button{min-width:108px;min-height:40px}
+  .art-face-back{padding:17px 16px 15px;gap:9px}
+  .art-story-copy h3{margin:12px 0 8px}
+  .art-story-copy p{font-size:10px;line-height:1.58}
+}
+@media(prefers-reduced-motion:reduce){
+  .gallery-grid[data-swipe-deck="true"]>.art-card,.art-flip-inner{transition-duration:.01ms!important}
+}
