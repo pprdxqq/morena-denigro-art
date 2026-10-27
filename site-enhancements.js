@@ -104,13 +104,149 @@ makeCard = function(w, mode) {
   const back = '<div class="art-face art-face-back" id="' + id + '" aria-hidden="true"><div class="art-story-copy"><span class="art-story-kicker">HINTER DEM WERK</span><h3>' + w.title + '</h3><p>' + story + '</p><span class="art-story-series">' + w.series.toUpperCase() + ' · ' + (w.year || "2026") + '</span></div><button class="art-flip-trigger art-flip-return" type="button" data-art-flip aria-expanded="true" aria-controls="' + id + '"><svg aria-hidden="true" viewBox="0 0 24 24"><path d="M19 12H5m6 6-6-6 6-6"/></svg><span>Zurück zum Bild</span></button></div>';
   return html.slice(0, start) + '<div class="art-flip-card" data-flip-card><div class="art-flip-inner">' + front + back + '</div></div>' + html.slice(end);
 };
+
+// Tinder-inspired artwork browsing: swipe to browse only, never to vote.
+let swipeGrid = null, swipeCards = [], swipeIndex = 0, swipeCurrentTitle = "";
+let swipeAnimating = false, swipeDrag = null, suppressImageClickUntil = 0;
+function resetArtworkFlip(card) {
+  if (!card) return;
+  card.classList.remove("is-flipped");
+  card.querySelector(".art-face-front")?.setAttribute("aria-hidden", "false");
+  card.querySelector(".art-face-back")?.setAttribute("aria-hidden", "true");
+  card.querySelectorAll("[data-art-flip]").forEach(function(button) {
+    button.setAttribute("aria-expanded", "false");
+  });
+}
+function paintArtworkDeck() {
+  if (!swipeGrid) return;
+  swipeCards = Array.from(swipeGrid.querySelectorAll(".art-card"));
+  const count = swipeCards.length;
+  swipeCards.forEach(function(card, index) {
+    card.classList.remove("is-swipe-active", "is-swipe-next", "is-swipe-next-two", "is-swipe-hidden", "is-swipe-away-left", "is-swipe-away-right", "is-swipe-dragging");
+    card.style.removeProperty("--swipe-x");
+    card.style.removeProperty("--swipe-rotation");
+    const distance = count ? (index - swipeIndex + count) % count : 0;
+    if (distance === 0) {
+      card.classList.add("is-swipe-active");
+      card.setAttribute("aria-hidden", "false");
+      card.inert = false;
+      swipeCurrentTitle = card.querySelector(".art-info h3")?.textContent || "";
+    } else {
+      card.setAttribute("aria-hidden", "true");
+      card.inert = true;
+      if (distance === 1) card.classList.add("is-swipe-next");
+      else if (distance === 2) card.classList.add("is-swipe-next-two");
+      else card.classList.add("is-swipe-hidden");
+    }
+  });
+  const status = document.querySelector("[data-swipe-status]");
+  if (status) status.textContent = count ? String(swipeIndex + 1).padStart(2, "0") + " / " + String(count).padStart(2, "0") : "00 / 00";
+  document.querySelectorAll("[data-swipe-prev], [data-swipe-next]").forEach(function(button) { button.disabled = count < 2; });
+}
+function moveArtworkDeck(direction) {
+  const count = swipeCards.length;
+  if (!count || count < 2 || swipeAnimating) return;
+  const outgoing = swipeCards[swipeIndex];
+  const nextIndex = (swipeIndex + direction + count) % count;
+  resetArtworkFlip(outgoing);
+  resetArtworkFlip(swipeCards[nextIndex]);
+  outgoing.style.removeProperty("--swipe-x");
+  outgoing.style.removeProperty("--swipe-rotation");
+  outgoing.classList.remove("is-swipe-dragging");
+  outgoing.classList.add(direction > 0 ? "is-swipe-away-left" : "is-swipe-away-right");
+  swipeAnimating = true;
+  window.setTimeout(function() {
+    outgoing.classList.remove("is-swipe-away-left", "is-swipe-away-right");
+    swipeIndex = nextIndex;
+    swipeAnimating = false;
+    paintArtworkDeck();
+  }, 360);
+}
+function setupArtworkSwiper() {
+  const grid = document.querySelector(".gallery-grid[data-art-grid='all']");
+  if (!grid) return;
+  const previousTitle = swipeCurrentTitle;
+  swipeGrid = grid;
+  grid.dataset.swipeDeck = "true";
+  grid.setAttribute("aria-label", "Swipe-Galerie der Kunstwerke. Ziehe auf einem Bild nach links oder rechts.");
+  swipeCards = Array.from(grid.querySelectorAll(".art-card"));
+  if (!grid.dataset.swipeBound) {
+    grid.dataset.swipeBound = "true";
+    grid.addEventListener("pointerdown", function(event) {
+      const face = event.target.closest(".art-flip-card");
+      if (!face || !grid.contains(face) || !face.closest(".art-card")?.classList.contains("is-swipe-active")) return;
+      if (event.target.closest("button, input, select, textarea, [data-art-flip]")) return;
+      if (swipeAnimating) return;
+      swipeDrag = { pointerId: event.pointerId, x: event.clientX, y: event.clientY, card: face.closest(".art-card"), grid: grid, moved: false };
+    });
+    grid.addEventListener("keydown", function(event) {
+      if (event.target.closest("button, a, input, select, textarea")) return;
+      if (event.key === "ArrowRight") { event.preventDefault(); moveArtworkDeck(1); }
+      if (event.key === "ArrowLeft") { event.preventDefault(); moveArtworkDeck(-1); }
+    });
+  }
+  if (swipeCards.length) {
+    const preserved = previousTitle ? swipeCards.findIndex(function(card) { return card.querySelector(".art-info h3")?.textContent === previousTitle; }) : -1;
+    swipeIndex = preserved >= 0 ? preserved : 0;
+  } else swipeIndex = 0;
+  paintArtworkDeck();
+}
+document.addEventListener("pointermove", function(event) {
+  if (!swipeDrag || event.pointerId !== swipeDrag.pointerId) return;
+  const dx = event.clientX - swipeDrag.x, dy = event.clientY - swipeDrag.y;
+  if (Math.abs(dy) > 12 && Math.abs(dy) > Math.abs(dx) * 1.15) return;
+  if (Math.abs(dx) > 7 && Math.abs(dx) > Math.abs(dy) * 1.05) {
+    swipeDrag.moved = true;
+    swipeDrag.card.classList.add("is-swipe-dragging");
+    swipeDrag.card.style.setProperty("--swipe-x", dx + "px");
+    const width = swipeDrag.grid.clientWidth || 1;
+    swipeDrag.card.style.setProperty("--swipe-rotation", Math.max(-12, Math.min(12, dx / width * 12)) + "deg");
+    event.preventDefault();
+  }
+}, { passive: false });
+document.addEventListener("pointerup", function(event) {
+  if (!swipeDrag || event.pointerId !== swipeDrag.pointerId) return;
+  const drag = swipeDrag;
+  swipeDrag = null;
+  const dx = event.clientX - drag.x, dy = event.clientY - drag.y;
+  drag.card.classList.remove("is-swipe-dragging");
+  if (drag.moved && Math.abs(dx) > Math.max(58, drag.grid.clientWidth * 0.16) && Math.abs(dx) > Math.abs(dy) * 1.2) {
+    suppressImageClickUntil = performance.now() + 500;
+    drag.card.style.removeProperty("--swipe-x");
+    drag.card.style.removeProperty("--swipe-rotation");
+    moveArtworkDeck(dx < 0 ? 1 : -1);
+  } else {
+    drag.card.style.removeProperty("--swipe-x");
+    drag.card.style.removeProperty("--swipe-rotation");
+  }
+});
+document.addEventListener("pointercancel", function() {
+  if (!swipeDrag) return;
+  swipeDrag.card.classList.remove("is-swipe-dragging");
+  swipeDrag.card.style.removeProperty("--swipe-x");
+  swipeDrag.card.style.removeProperty("--swipe-rotation");
+  swipeDrag = null;
+});
+document.addEventListener("click", function(event) {
+  if (performance.now() > suppressImageClickUntil) return;
+  if (event.target.closest(".gallery-grid[data-swipe-deck='true'] .art-image")) {
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    suppressImageClickUntil = 0;
+  }
+}, true);
+
 const oldRenderGrids = renderGrids;
-renderGrids = function() { oldRenderGrids(); document.querySelectorAll("[data-art-grid]").forEach(applyTranslations); };
+renderGrids = function() { oldRenderGrids(); document.querySelectorAll("[data-art-grid]").forEach(applyTranslations); setupArtworkSwiper(); };
 const oldRenderCart = renderCart;
 renderCart = function() { oldRenderCart(); applyTranslations(document.querySelector(".cart-content")); };
 const oldToast = toast;
 toast = function(message) { oldToast(translatePhrase(message)); };
 document.addEventListener("click", function(e) {
+  const swipePrev = e.target.closest("[data-swipe-prev]");
+  if (swipePrev) { e.preventDefault(); moveArtworkDeck(-1); return; }
+  const swipeNext = e.target.closest("[data-swipe-next]");
+  if (swipeNext) { e.preventDefault(); moveArtworkDeck(1); return; }
   const flip = e.target.closest("[data-art-flip]");
   if (flip) { const card = flip.closest("[data-flip-card]"); if (card) { const open = card.classList.toggle("is-flipped"); card.querySelector(".art-face-front")?.setAttribute("aria-hidden", String(open)); card.querySelector(".art-face-back")?.setAttribute("aria-hidden", String(!open)); card.querySelectorAll("[data-art-flip]").forEach(function(b) { b.setAttribute("aria-expanded", String(open)); }); } }
   const menu = e.target.closest(".menu-toggle"); if (menu) setTimeout(function() { const open = document.querySelector(".site-header nav")?.classList.contains("open"); menu.setAttribute("aria-expanded", String(!!open)); menu.setAttribute("aria-label", translatePhrase(open ? "Menü schließen" : "Menü öffnen")); }, 0);
