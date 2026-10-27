@@ -227,6 +227,58 @@ document.addEventListener("pointercancel", function() {
   swipeDrag.card.style.removeProperty("--swipe-rotation");
   swipeDrag = null;
 });
+
+/* Premium artwork viewer: glass controls, zoom, watermark and close/keyboard support. */
+function openArtworkViewer(anchor) {
+  const image = anchor.querySelector("img");
+  if (!image) return;
+  const card = anchor.closest(".art-card");
+  const title = card?.querySelector(".art-info h3")?.textContent || image.alt || "Artwork";
+  const medium = card?.querySelector(".art-info p")?.textContent || "";
+  const label = card?.querySelector(".art-label")?.textContent || "";
+  const overlay = document.createElement("div");
+  overlay.className = "artwork-viewer";
+  overlay.setAttribute("role","dialog");
+  overlay.setAttribute("aria-modal","true");
+  overlay.setAttribute("aria-label","Artwork ansehen: " + title);
+  overlay.innerHTML = '<div class="artwork-viewer-backdrop"></div><header class="artwork-viewer-toolbar"><div class="artwork-viewer-brand"><span class="artwork-viewer-monogram">MD</span><span><b>MORENA DENIGRO</b><small>ARTIST · LUXEMBOURG</small></span></div><div class="artwork-viewer-tools"><button type="button" data-viewer-zoom aria-label="Bild vergrößern" title="Zoom">＋ <span>Zoom</span></button><button type="button" data-viewer-reset aria-label="Zoom zurücksetzen" title="Zoom zurücksetzen">↺</button><button type="button" data-viewer-close aria-label="Bildansicht schließen" title="Schließen">×</button></div></header><div class="artwork-viewer-stage"><div class="artwork-viewer-image-wrap"><img class="artwork-viewer-image" alt=""><span class="artwork-viewer-watermark" aria-hidden="true">MORENA<br><i>DENIGRO</i></span></div><div class="artwork-viewer-caption"><span class="artwork-viewer-kicker"></span><h2></h2><p></p></div><div class="artwork-viewer-hint">PINCH TO ZOOM · DRAG TO EXPLORE</div></div>';
+  const largeImage = overlay.querySelector(".artwork-viewer-image");
+  largeImage.src = image.currentSrc || image.src;
+  largeImage.alt = image.alt;
+  overlay.querySelector(".artwork-viewer-kicker").textContent = label;
+  overlay.querySelector(".artwork-viewer-caption h2").textContent = title;
+  overlay.querySelector(".artwork-viewer-caption p").textContent = medium;
+  document.body.appendChild(overlay);
+  document.body.classList.add("artwork-viewer-open");
+  let scale=1,tx=0,ty=0,pointer=null,pinchDistance=0,pinchScale=1;
+  const close=()=>{overlay.remove();document.body.classList.remove("artwork-viewer-open");document.removeEventListener("keydown",keyHandler);anchor.focus({preventScroll:true});};
+  const paint=()=>{largeImage.style.transform="translate("+tx+"px,"+ty+"px) scale("+scale+")";largeImage.style.cursor=scale>1?"grab":"zoom-in";overlay.querySelector("[data-viewer-zoom]").innerHTML=scale>1?"− <span>Verkleinern</span>":"＋ <span>Zoom</span>";};
+  const reset=()=>{scale=1;tx=0;ty=0;paint();};
+  const zoom=()=>{scale=scale>1?1:2;paint();};
+  overlay.querySelector("[data-viewer-close]").addEventListener("click",close);
+  overlay.querySelector("[data-viewer-zoom]").addEventListener("click",zoom);
+  overlay.querySelector("[data-viewer-reset]").addEventListener("click",reset);
+  overlay.querySelector(".artwork-viewer-backdrop").addEventListener("click",close);
+  largeImage.addEventListener("click",()=>{if(scale===1)zoom();});
+  largeImage.addEventListener("pointerdown",e=>{if(scale<=1)return;pointer={x:e.clientX-tx,y:e.clientY-ty};largeImage.setPointerCapture?.(e.pointerId);});
+  largeImage.addEventListener("pointermove",e=>{if(!pointer)return;tx=e.clientX-pointer.x;ty=e.clientY-pointer.y;paint();});
+  const endDrag=()=>{pointer=null;};largeImage.addEventListener("pointerup",endDrag);largeImage.addEventListener("pointercancel",endDrag);
+  const keyHandler=e=>{if(e.key==="Escape")close();if(e.key==="+"||e.key==="=")zoom();if(e.key==="0")reset();};
+  document.addEventListener("keydown",keyHandler);
+  let lastTouchDistance=0;
+  largeImage.addEventListener("touchstart",e=>{if(e.touches.length===2){lastTouchDistance=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY);}}, {passive:true});
+  largeImage.addEventListener("touchmove",e=>{if(e.touches.length===2&&lastTouchDistance){const distance=Math.hypot(e.touches[0].clientX-e.touches[1].clientX,e.touches[0].clientY-e.touches[1].clientY);scale=Math.max(1,Math.min(4,scale*distance/lastTouchDistance));lastTouchDistance=distance;paint();e.preventDefault();}}, {passive:false});
+  largeImage.addEventListener("touchend",()=>{lastTouchDistance=0;},{passive:true});
+  paint();
+  overlay.querySelector("[data-viewer-close]").focus({preventScroll:true});
+}
+document.addEventListener("click",function(event){
+  const anchor=event.target.closest(".gallery-grid[data-swipe-deck='true'] .art-card.is-swipe-active .art-image");
+  if(!anchor)return;
+  event.preventDefault();
+  openArtworkViewer(anchor);
+},true);
+
 document.addEventListener("click", function(event) {
   if (performance.now() > suppressImageClickUntil) return;
   if (event.target.closest(".gallery-grid[data-swipe-deck='true'] .art-image")) {
