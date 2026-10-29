@@ -15,7 +15,8 @@ module.exports = async function handler(req, res) {
       prefer: 'resolution=merge-duplicates,return=minimal'
     });
     const base = (process.env.PUBLIC_SITE_URL || '').replace(/\/$/, '');
-    if (!base) return json(res, 200, { ok: true, confirmationEmailSent: false, code: 'PUBLIC_SITE_URL_MISSING' });\n    const confirmationUrl = base + '/newsletter-status.html?action=confirm&token=' + token;
+    if (!base) return json(res, 200, { ok: true, confirmationEmailSent: false, code: 'PUBLIC_SITE_URL_MISSING' });
+    const confirmationUrl = base + '/newsletter-status.html?action=confirm&token=' + token;
     const unsubscribeUrl = base + '/newsletter-status.html?action=unsubscribe&token=' + unsubscribe;
     const couponReady = process.env.MORENA_COUPON_ACTIVE === 'true';
     let sent = { sent: false };
