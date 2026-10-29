@@ -1,4 +1,4 @@
-const { json, method, db, fail } = require('./_lib');
+const { json, method, db, fail } = require('../lib/api-helpers');
 module.exports = async function handler(req, res) {
   if (!method(req, res, ['GET'])) return;
   try {
