@@ -6,7 +6,7 @@ module.exports = async function handler(req, res) {
     const data = await body(req);
     const email = String(data.email || '').trim().toLowerCase();
     if (!/^\S+@\S+\.\S+$/.test(email) || data.consent !== true) return json(res, 400, { error: 'Bitte gib eine gültige E-Mail-Adresse ein und bestätige die Anmeldung.' });
-    const token = crypto.randomBytes(32).toString('hex');
+    const base = (process.env.PUBLIC_SITE_URL || '').replace(/\/$/, '');\n    if (!base || !process.env.RESEND_API_KEY || !process.env.MORENA_FROM_EMAIL) return json(res, 503, { error: 'Die Newsletter-Anmeldung ist noch nicht vollständig aktiviert.', code: 'NEWSLETTER_NOT_CONFIGURED' });\n    const token = crypto.randomBytes(32).toString('hex');
     const unsubscribe = crypto.randomBytes(32).toString('hex');
     const hash = value => crypto.createHash('sha256').update(value).digest('hex');
     await db('newsletter_subscribers?on_conflict=email', {
