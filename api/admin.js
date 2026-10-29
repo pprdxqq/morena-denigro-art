@@ -6,7 +6,7 @@ module.exports = async function handler(req, res) {
     if (req.method === 'GET') {
       const [artworks, orders, inquiries, events, subscribers] = await Promise.all([
         db('artworks?select=*&order=title.asc'),
-        db('orders?select=id,created_at,customer_name,customer_email,status,total_cents,currency,items,shipping_zone&order=created_at.desc&limit=100'),
+        db('orders?select=id,created_at,customer_name,customer_email,status,total_cents,currency,items,shipping_zone,shipping_address&order=created_at.desc&limit=100'),
         db('inquiries?select=id,created_at,name,email,topic,message,status,artwork_id&order=created_at.desc&limit=100'),
         db('site_events?select=event_name,artwork_id,created_at&order=created_at.desc&limit=1000'),
         db('newsletter_subscribers?select=id,email,created_at&order=created_at.desc&limit=500')
