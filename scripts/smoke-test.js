@@ -6,7 +6,7 @@ const exists = file => assert.ok(fs.existsSync(path.join(__dirname, '..', file))
 [
   'index.html','galerie.html','shop.html','artwork.html','artwork-detail.js','artist-dashboard.html',
   'artist-dashboard.js','api/_lib.js','api/catalogue.js','api/checkout.js','api/contact.js',
-  'api/newsletter.js','api/events.js','api/admin.js','api/webhook.js','api/order-status.js',
+  'api/newsletter.js','api/newsletter-confirm.js','api/newsletter-unsubscribe.js','api/events.js','api/admin.js','api/webhook.js','api/order-status.js',
   'order-success.html','order-success.js','supabase/migrations/20261029000000_morena_store.sql','BACKEND_SETUP.md'
 ].forEach(exists);
 const checkout = read('api/checkout.js');
@@ -18,7 +18,7 @@ assert.match(webhook, /timingSafeEqual/);
 assert.match(webhook, /bodyParser: false/);
 const admin = read('api/admin.js');
 assert.match(admin, /admin\(req\)/);
-assert.match(admin, /resource === 'artwork'/);
+assert.match(admin, /resource === 'artwork'/);\nassert.match(read('api/newsletter.js'), /randomBytes/);\nassert.match(read('api/newsletter-confirm.js'), /confirmation_token_hash/);\nassert.match(read('api/newsletter-unsubscribe.js'), /unsubscribed_at/);
 const helpers = read('api/_lib.js');
 assert.match(helpers, /timingSafeEqual/);
 assert.match(helpers, /Cache-Control/);
