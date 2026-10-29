@@ -33,3 +33,5 @@ module.exports = async function handler(req, res) {
     return json(res, 200, { received: true });
   } catch (_) { return json(res, 500, { error: 'Webhook processing failed.' }); }
 };
+
+module.exports.config = { api: { bodyParser: false } };
