@@ -1,3 +1,4 @@
+const crypto = require('node:crypto');
 const { json, method, body, db, fail } = require('./_lib');
 const works = {
   'daikoku-1': { title: 'Daikoku PA 1', status: 'Nicht verkäuflich', price: null },
@@ -14,7 +15,7 @@ const works = {
 const eu = ['AT','BE','BG','HR','CY','CZ','DK','EE','FI','FR','DE','GR','HU','IE','IT','LV','LT','LU','MT','NL','PL','PT','RO','SK','SI','ES','SE'];
 module.exports = async function handler(req, res) {
   if (!method(req, res, ['POST'])) return;
-  if (!process.env.STRIPE_SECRET_KEY || !process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) return json(res, 503, { error: 'Onlinekauf ist noch nicht aktiviert. Bitte frage den Print direkt an.', code: 'CHECKOUT_NOT_CONFIGURED' });
+  if (!process.env.STRIPE_SECRET_KEY || !process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY || !process.env.PUBLIC_SITE_URL) return json(res, 503, { error: 'Onlinekauf ist noch nicht aktiviert. Bitte frage den Print direkt an.', code: 'CHECKOUT_NOT_CONFIGURED' });
   try {
     const data = await body(req);
     const email = String(data.email || '').trim().toLowerCase();
