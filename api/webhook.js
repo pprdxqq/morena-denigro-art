@@ -26,7 +26,7 @@ module.exports = async function handler(req, res) {
         if (order && order.status !== 'paid') {
           await db('orders?id=eq.' + encodeURIComponent(order.id), { method: 'PATCH', body: { status: 'paid', stripe_session_id: session.id, paid_at: new Date().toISOString() } });
           const lines = (order.items || []).map(i => escapeHtml(i.title + ' · ' + i.size.toUpperCase() + ' × ' + i.qty)).join('<br>');
-          await sendEmail({ to: order.customer_email, subject: 'Bestellbestätigung — Morena Denigro', html: '<p>Hallo '+escapeHtml(order.customer_name)+',</p><p>deine Zahlung ist eingegangen. Hier ist deine Bestellübersicht:</p><p>'+lines+'</p><p>Gesamt: '+(order.total_cents/100).toLocaleString('de-DE',{style:'currency',currency:'EUR'})+'</p><p>Morena Denigro</p>', text: 'Hallo '+order.customer_name+',\n\ndeine Zahlung ist eingegangen.\n'+(order.items||[]).map(i=>i.title+' '+i.size+' × '+i.qty).join('\n')+'\nGesamt: '+(order.total_cents/100)+' EUR\nMorena Denigro' });
+          const customerMail = await sendEmail({ to: order.customer_email, subject: 'Bestellbestätigung — Morena Denigro', html: '<p>Hallo '+escapeHtml(order.customer_name)+',</p><p>deine Zahlung ist eingegangen. Hier ist deine Bestellübersicht:</p><p>'+lines+'</p><p>Gesamt: '+(order.total_cents/100).toLocaleString('de-DE',{style:'currency',currency:'EUR'})+'</p><p>Morena Denigro</p>', text: 'Hallo '+order.customer_name+',\n\ndeine Zahlung ist eingegangen.\n'+(order.items||[]).map(i=>i.title+' '+i.size+' × '+i.qty).join('\n')+'\nGesamt: '+(order.total_cents/100)+' EUR\nMorena Denigro' });
         }
       }
     }
