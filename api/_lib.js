@@ -46,5 +46,5 @@ async function sendEmail({to, subject, html, text}) {
   return { sent: true };
 }
 const escapeHtml = value => String(value == null ? '' : value).replace(/[&<>"']/g, ch => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[ch]));
-const fail = (res, error) => json(res, error.status || 500, { error: error.status === 503 ? 'Der Shop-Server ist noch nicht vollständig eingerichtet.' : 'Die Anfrage konnte gerade nicht verarbeitet werden.', code: error.status === 503 ? 'BACKEND_NOT_CONFIGURED' : 'REQUEST_FAILED' });
+const fail = (res, error) => { const status = error.status === 400 ? 400 : error.status === 503 ? 503 : 500; return json(res, status, { error: status === 503 ? 'Der Shop-Server ist noch nicht vollständig eingerichtet.' : status === 400 ? 'Die Anfrage enthält ungültige Angaben.' : 'Die Anfrage konnte gerade nicht verarbeitet werden.', code: status === 503 ? 'BACKEND_NOT_CONFIGURED' : status === 400 ? 'INVALID_REQUEST' : 'REQUEST_FAILED' }); };
 module.exports = { json, method, body, db, admin, sendEmail, escapeHtml, fail, configured };
