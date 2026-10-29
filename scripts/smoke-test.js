@@ -5,7 +5,7 @@ const read = file => fs.readFileSync(path.join(__dirname, '..', file), 'utf8');
 const exists = file => assert.ok(fs.existsSync(path.join(__dirname, '..', file)), 'Missing required file: ' + file);
 [
   'index.html','galerie.html','shop.html','artwork.html','artwork-detail.js','artist-dashboard.html',
-  'artist-dashboard.js','api/_lib.js','api/catalogue.js','api/checkout.js','api/contact.js',
+  'artist-dashboard.js','lib/api-helpers.js','api/catalogue.js','api/checkout.js','api/contact.js',
   'api/newsletter.js','api/newsletter-confirm.js','api/newsletter-unsubscribe.js','api/events.js',
   'api/admin.js','api/webhook.js','api/order-status.js','api/status.js','newsletter-status.html',
   'newsletter-status.js','order-success.html','order-success.js',
@@ -24,7 +24,7 @@ assert.match(admin, /resource === 'artwork'/);
 assert.match(read('api/newsletter.js'), /randomBytes/);
 assert.match(read('api/newsletter-confirm.js'), /confirmation_token_hash/);
 assert.match(read('api/newsletter-unsubscribe.js'), /unsubscribed_at/);
-const helpers = read('api/_lib.js');
+const helpers = read('lib/api-helpers.js');
 assert.match(helpers, /timingSafeEqual/);
 assert.match(helpers, /Cache-Control/);
 const sql = read('supabase/migrations/20261029000000_morena_store.sql');
