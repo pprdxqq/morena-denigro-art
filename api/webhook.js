@@ -1,5 +1,5 @@
 const crypto = require('node:crypto');
-const { json, db, sendEmail, escapeHtml } = require('./_lib');
+const { json, db, sendEmail, escapeHtml } = require('../lib/api-helpers');
 function verify(raw, header, secret) {
   const pieces = String(header || '').split(',').map(part => part.trim().split('='));
   const timestamp = pieces.find(p => p[0] === 't')?.[1];
