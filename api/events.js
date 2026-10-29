@@ -1,4 +1,4 @@
-const { json, method, body, db, fail } = require('./_lib');
+const { json, method, body, db, fail } = require('../lib/api-helpers');
 const allowed = new Set(['view_artwork','view_shop','add_to_cart','begin_checkout','checkout_cancelled','checkout_success','inquiry_submitted','newsletter_submitted']);
 module.exports = async function handler(req, res) {
   if (!method(req, res, ['POST'])) return;
