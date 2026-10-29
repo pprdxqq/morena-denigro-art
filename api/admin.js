@@ -9,7 +9,7 @@ module.exports = async function handler(req, res) {
         db('orders?select=id,created_at,customer_name,customer_email,status,total_cents,currency,items,shipping_zone,shipping_address&order=created_at.desc&limit=100'),
         db('inquiries?select=id,created_at,name,email,topic,message,status,artwork_id&order=created_at.desc&limit=100'),
         db('site_events?select=event_name,artwork_id,created_at&order=created_at.desc&limit=1000'),
-        db('newsletter_subscribers?select=id,email,created_at&order=created_at.desc&limit=500')
+        db('newsletter_subscribers?select=id,email,created_at,confirmed_at,unsubscribed_at&order=created_at.desc&limit=500')
       ]);
       const counts = events.reduce((a, e) => { a[e.event_name] = (a[e.event_name] || 0) + 1; return a; }, {});
       return json(res, 200, { artworks, orders, inquiries, events: counts, subscribers });
