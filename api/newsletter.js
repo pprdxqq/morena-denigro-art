@@ -1,12 +1,14 @@
 const crypto = require('node:crypto');
-const { json, method, body, db, sendEmail, escapeHtml, fail } = require('../lib/api-helpers');
+const { json, method, body, db, sendEmail, fail } = require('../lib/api-helpers');
 module.exports = async function handler(req, res) {
   if (!method(req, res, ['POST'])) return;
   try {
     const data = await body(req);
     const email = String(data.email || '').trim().toLowerCase();
     if (!/^\S+@\S+\.\S+$/.test(email) || data.consent !== true) return json(res, 400, { error: 'Bitte gib eine gültige E-Mail-Adresse ein und bestätige die Anmeldung.' });
-    const base = (process.env.PUBLIC_SITE_URL || '').replace(/\/$/, '');\n    if (!base || !process.env.RESEND_API_KEY || !process.env.MORENA_FROM_EMAIL) return json(res, 503, { error: 'Die Newsletter-Anmeldung ist noch nicht vollständig aktiviert.', code: 'NEWSLETTER_NOT_CONFIGURED' });\n    const token = crypto.randomBytes(32).toString('hex');
+    const base = (process.env.PUBLIC_SITE_URL || '').replace(/\/$/, '');
+    if (!base || !process.env.RESEND_API_KEY || !process.env.MORENA_FROM_EMAIL) return json(res, 503, { error: 'Die Newsletter-Anmeldung ist noch nicht vollständig aktiviert.', code: 'NEWSLETTER_NOT_CONFIGURED' });
+    const token = crypto.randomBytes(32).toString('hex');
     const unsubscribe = crypto.randomBytes(32).toString('hex');
     const hash = value => crypto.createHash('sha256').update(value).digest('hex');
     await db('newsletter_subscribers?on_conflict=email', {
@@ -14,8 +16,6 @@ module.exports = async function handler(req, res) {
       body: { email, consent_at: new Date().toISOString(), confirmed_at: null, confirmation_token_hash: hash(token), unsubscribe_token_hash: hash(unsubscribe), unsubscribed_at: null, source: String(data.source || 'website').slice(0, 80) },
       prefer: 'resolution=merge-duplicates,return=minimal'
     });
-    const base = (process.env.PUBLIC_SITE_URL || '').replace(/\/$/, '');
-    if (!base) return json(res, 200, { ok: true, confirmationEmailSent: false, code: 'PUBLIC_SITE_URL_MISSING' });
     const confirmationUrl = base + '/newsletter-status.html?action=confirm&token=' + token;
     const unsubscribeUrl = base + '/newsletter-status.html?action=unsubscribe&token=' + unsubscribe;
     const couponReady = process.env.MORENA_COUPON_ACTIVE === 'true';
