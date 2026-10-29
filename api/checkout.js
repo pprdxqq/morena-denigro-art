@@ -1,5 +1,5 @@
 const crypto = require('node:crypto');
-const { json, method, body, db, fail } = require('./_lib');
+const { json, method, body, db, fail } = require('../lib/api-helpers');
 const works = {
   'daikoku-1': { title: 'Daikoku PA 1', status: 'Nicht verkäuflich', price: null },
   'daikoku-2': { title: 'Daikoku PA 2', status: 'Original verfügbar', price: 850 },
