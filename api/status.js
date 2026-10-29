@@ -1,4 +1,4 @@
-const { json, method } = require('./_lib');
+const { json, method } = require('../lib/api-helpers');
 module.exports = async function handler(req, res) {
   if (!method(req, res, ['GET'])) return;
   const database = Boolean(process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY);
