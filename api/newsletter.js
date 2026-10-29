@@ -1,5 +1,5 @@
 const crypto = require('node:crypto');
-const { json, method, body, db, sendEmail, escapeHtml, fail } = require('./_lib');
+const { json, method, body, db, sendEmail, escapeHtml, fail } = require('../lib/api-helpers');
 module.exports = async function handler(req, res) {
   if (!method(req, res, ['POST'])) return;
   try {
