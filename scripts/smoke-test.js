@@ -6,7 +6,7 @@ const exists = file => assert.ok(fs.existsSync(path.join(__dirname, '..', file))
 [
   'index.html','galerie.html','shop.html','artwork.html','artwork-detail.js','artist-dashboard.html',
   'artist-dashboard.js','api/_lib.js','api/catalogue.js','api/checkout.js','api/contact.js',
-  'api/newsletter.js','api/newsletter-confirm.js','api/newsletter-unsubscribe.js','api/events.js','api/admin.js','api/webhook.js','api/order-status.js',
+  'api/newsletter.js','api/newsletter-confirm.js','api/newsletter-unsubscribe.js','api/events.js','api/admin.js','api/webhook.js','api/order-status.js','api/status.js',
   'order-success.html','order-success.js','supabase/migrations/20261029000000_morena_store.sql','BACKEND_SETUP.md'
 ].forEach(exists);
 const checkout = read('api/checkout.js');
