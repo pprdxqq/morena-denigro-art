@@ -13,12 +13,12 @@ Add these Vercel environment variables for **Production** (and Preview separatel
 - `STRIPE_SECRET_KEY` — Stripe secret API key.
 - `STRIPE_WEBHOOK_SECRET` — endpoint signing secret for `/api/webhook`.
 - `PUBLIC_SITE_URL` — canonical HTTPS URL, e.g. `https://morena-denigro-art.vercel.app`.
-- `RESEND_API_KEY` and `MORENA_FROM_EMAIL` — optional until verified email sending is ready. `MORENA_FROM_EMAIL` must be a verified sender/domain in Resend.
+- `RESEND_API_KEY` and `MORENA_FROM_EMAIL` — optional until verified email sending is ready. Newsletter signups use double opt-in and include an unsubscribe link.\n- `MORENA_COUPON_ACTIVE=true` — set only after the `MORENA10` promotion code is actually created and tested in Stripe; otherwise the newsletter does not promise a redeemable code. `MORENA_FROM_EMAIL` must be a verified sender/domain in Resend.
 - `MORENA_CONTACT_EMAIL` — optional, defaults to the contact address already published on the site.
 
 ## Stripe configuration
 
-Create a Stripe webhook endpoint at `https://morena-denigro-art.vercel.app/api/webhook` subscribed to `checkout.session.completed` and `checkout.session.async_payment_succeeded`. Add its signing secret as `STRIPE_WEBHOOK_SECRET`. Checkout currently supports the print SKUs already listed on the website (A6 €12, A5 €20), Luxembourg shipping (€3), EU shipping (€5), and optional insurance (€7.99). Original paintings remain enquiry-only. Enable the `MORENA10` promotion code in Stripe if the newsletter discount should be redeemable at checkout; Checkout permits promotion codes but does not create the discount automatically.
+Create a Stripe webhook endpoint at `https://morena-denigro-art.vercel.app/api/webhook` subscribed to `checkout.session.completed` and `checkout.session.async_payment_succeeded`. Add its signing secret as `STRIPE_WEBHOOK_SECRET`. Checkout currently supports the print SKUs already listed on the website (A6 €12, A5 €20), Luxembourg shipping (€3), EU shipping (€5), and optional insurance (€7.99). Original paintings remain enquiry-only. Create and test the `MORENA10` promotion code in Stripe if the newsletter discount should be redeemable at checkout; Checkout permits promotion codes but does not create the discount automatically. Only then set `MORENA_COUPON_ACTIVE=true`.
 
 ## Private artist dashboard
 
