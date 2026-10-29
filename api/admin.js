@@ -1,4 +1,4 @@
-const { json, method, body, db, admin, fail } = require('./_lib');
+const { json, method, body, db, admin, fail } = require('../lib/api-helpers');
 module.exports = async function handler(req, res) {
   if (!method(req, res, ['GET','PATCH'])) return;
   if (!admin(req)) return json(res, 401, { error: 'Nicht autorisiert.' });
