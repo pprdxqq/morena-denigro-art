@@ -30,6 +30,9 @@ create table if not exists public.orders (
   items jsonb not null,
   consent_at timestamptz not null,
   stripe_session_id text unique,
+  stripe_customer_id text,
+  shipping_address jsonb,
+  confirmation_email_sent_at timestamptz,
   paid_at timestamptz
 );
 create table if not exists public.inquiries (
@@ -47,6 +50,10 @@ create table if not exists public.newsletter_subscribers (
   email text not null unique,
   created_at timestamptz not null default now(),
   consent_at timestamptz not null,
+  confirmed_at timestamptz,
+  confirmation_token_hash text,
+  unsubscribe_token_hash text,
+  unsubscribed_at timestamptz,
   source text not null default 'website'
 );
 create table if not exists public.site_events (
